@@ -1,6 +1,6 @@
 {
   "name": "Party Chatt",
   "description": "Vibrant, high-energy party discovery and chat application inspired by modern connecting apps, featuring live user status, matchmaking filters, user feeds, interactive chats, and daily coin rewards.",
-  "requestFramePermissions": [],
+  "requestFramePermissions": ["camera"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

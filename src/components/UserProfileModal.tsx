@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, MapPin, Heart, MessageSquare, ShieldAlert, ArrowLeft, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { UserProfile, AppLanguage } from '../types';
+import { getPartyActivity } from '../data';
 
 interface UserProfileModalProps {
   language: AppLanguage;
@@ -104,23 +105,45 @@ export default function UserProfileModal({
 
           {/* Bottom gradient name label tag overlay */}
           <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black via-black/45 to-transparent p-4 flex flex-col pt-12">
-            <div className="flex items-center gap-1.5">
-              <h3 className="text-2xl font-black text-white leading-none tracking-tight">
-                {profile.name}
-              </h3>
-              
-              {/* Gender icon indicator card */}
-              <span className={`text-xs px-2 py-0.5 rounded-full border-1.5 border-black font-black leading-none flex items-center gap-0.5 ${
-                profile.gender === 'Female' ? 'bg-amber-400 text-black' : 'bg-emerald-500 text-white'
-              }`}>
-                {profile.gender === 'Female' ? '♀' : '♂'} {profile.age}
-              </span>
-            </div>
+            {(() => {
+              const activity = getPartyActivity(profile);
+              const activityText = language === 'sw' ? activity.textSw : activity.text;
+              return (
+                <>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <h3 className="text-2xl font-black text-white leading-none tracking-tight">
+                      {profile.name}
+                    </h3>
+                    <span 
+                      className="inline-flex items-center justify-center text-xl cursor-help select-none bg-black/60 px-1.5 py-0.5 rounded-full border border-zinc-800 animate-bounce"
+                      style={{ animationDuration: '3s' }}
+                      title={activityText}
+                    >
+                      {activity.emoji}
+                    </span>
+                    
+                    {/* Gender icon indicator card */}
+                    <span className={`text-xs px-2 py-0.5 rounded-full border-1.5 border-black font-black leading-none flex items-center gap-0.5 ${
+                      profile.gender === 'Female' ? 'bg-amber-400 text-black' : 'bg-emerald-500 text-white'
+                    }`}>
+                      {profile.gender === 'Female' ? '♀' : '♂'} {profile.age}
+                    </span>
+                  </div>
 
-            <div className="flex items-center gap-1 text-zinc-300 text-[11px] font-extrabold mt-1.5 uppercase font-mono tracking-wider">
-              <MapPin className="w-3.5 h-3.5 text-yellow-400 shrink-0" />
-              <span>{profile.location} • {profile.distance} • Real Person</span>
-            </div>
+                  <div className="flex items-center gap-1 text-zinc-300 text-[11px] font-extrabold mt-1.5 uppercase font-mono tracking-wider">
+                    <MapPin className="w-3.5 h-3.5 text-yellow-400 shrink-0" />
+                    <span>{profile.location} • {profile.distance} • Real Person</span>
+                  </div>
+
+                  {/* Active Live Activity indicator */}
+                  <div className="flex items-center gap-1.5 text-yellow-400 text-[9px] font-black tracking-wider uppercase mt-2 bg-black/75 px-2 py-1 rounded-lg border border-yellow-400/30 w-fit max-w-full">
+                    <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-ping shrink-0"></span>
+                    <span className="text-zinc-400 normal-case font-bold">{language === 'en' ? 'Currently at party:' : 'Kwenye sherehe sasa hivi:'}</span>
+                    <span className="text-yellow-400">{activityText}</span>
+                  </div>
+                </>
+              );
+            })()}
           </div>
         </div>
 

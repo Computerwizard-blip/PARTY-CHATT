@@ -48,42 +48,90 @@ const countyProfilesRaw = [
   { county: "Migori", name: "Akoth", age: 25, gender: "Female", images: ["/assets/input_file_9.png", "/assets/input_file_6.png"], hobbies: ["Nature", "Music", "Dancing"], status: "Outgoing, sweet, and caring" },
   { county: "Kisii", name: "Kemunto", age: 24, gender: "Female", images: ["/assets/input_file_10.png", "/assets/input_file_7.png"], hobbies: ["Cooking", "Tiktok editing", "Movies"], status: "Happy kid looking for pure vibes" },
   { county: "Nyamira", name: "Moraa", age: 23, gender: "Female", images: ["/assets/input_file_11.png", "/assets/input_file_8.png"], hobbies: ["Dramatics", "Singing", "Cooking"], status: "Love and life, always bubbly!" },
-  { county: "Nairobi", name: "Vee", age: 22, gender: "Female", images: ["/assets/input_file_12.png", "/assets/input_file_13.png"], hobbies: ["Socializing", "Clubbing", "Tiktok", "Shopping"], status: "Nairobi party girl looking for a cool partner" }
+  { county: "Nairobi", name: "Vee", age: 22, gender: "Female", images: ["/assets/input_file_12.png", "/assets/input_file_13.png"], hobbies: ["Socializing", "Clubbing", "Tiktok", "Shopping"], status: "Nairobi party girl looking for a cool partner" },
+  { county: "Nairobi", name: "Shanice", age: 22, gender: "Female", images: ["/assets/input_file_14.png"], hobbies: ["Clubbing", "Fashion", "Tiktok", "Blogging"], status: "Form ni kudrop in style! Let's match and bonga hapa Party Chatt 💃❤️" },
+  { county: "Mombasa", name: "Faith", age: 21, gender: "Female", images: ["/assets/input_file_15.png"], hobbies: ["Dancing", "Music", "Beach Party", "Cocktails"], status: "Unavyonipenda ndivyo nitakavyokupenda. Vibe yetu isilete drama vipi?" },
+  { county: "Nakuru", name: "Joy", age: 23, gender: "Female", images: ["/assets/input_file_16.png"], hobbies: ["Baking", "Dining", "Photography", "Road trips"], status: "Zawadi ndogo ndogo ndio hufurahisha moyo. Niko hapa kwa vibe safi sana 😊🎁" },
+  { county: "Eldoret", name: "Cynthia", age: 22, gender: "Female", images: ["/assets/input_file_17.png"], hobbies: ["Gym", "Netball", "TikTok editing", "Music"], status: "Ucheshi na tabasamu ni fomu yangu ya kila siku. Niko fiti kabisa yaani!" },
+  { county: "Kisumu", name: "Brenda", age: 24, gender: "Female", images: ["/assets/input_file_18.png"], hobbies: ["Blogging", "Fashion", "Dining", "Boba Tea"], status: "Lover of elegance and red dresses. Mambo vipi mkuu, uko fiti leo?" },
+  { county: "Kiambu", name: "Mercy", age: 23, gender: "Female", images: ["/assets/input_file_19.png"], hobbies: ["Tattoo Design", "Blogging", "Rock music", "Gaming"], status: "Siri ya upendo ni uaminifu na kubonga straight! Let's vibe." },
+  { county: "Machakos", name: "Anita", age: 22, gender: "Female", images: ["/assets/input_file_20.png"], hobbies: ["Design", "Travel", "Sneakers", "Dancing"], status: "Kujiamini ndio kila kitu. Sisi hapa ni watu wa form fiti pekee!" },
+  { county: "Kajiado", name: "Neema", age: 23, gender: "Female", images: ["/assets/input_file_21.png"], hobbies: ["Henna Design", "Fashion", "Music", "Cocktails"], status: "Let's live, love, and connect genuinely. Niko hapa kubonga, hakuna fake vibes" },
+  { county: "Nyeri", name: "Shiku", age: 24, gender: "Female", images: ["/assets/input_file_22.png"], hobbies: ["Hiking", "Travel", "Nature", "Movies"], status: "Mlima Kenya beauty. Maisha ni mafupi, tuishi kwa furaha na amani" },
+  { county: "Kilifi", name: "Stacy", age: 21, gender: "Female", images: ["/assets/input_file_23.png"], hobbies: ["Boba Tea", "Baking", "TikTok", "Design"], status: "Classy look with a sweet heart. Nisalimie basi uone tabasamu langu!" },
+  { county: "Kwale", name: "Stacy Ann", age: 23, gender: "Female", images: ["/assets/input_file_24.png"], hobbies: ["Salsa", "Beach walk", "Hiking", "Netball"], status: "Independent girl enjoying Kwale breeze. Form ni kujipanga hapa" }
+];
+
+const femaleImages = [
+  "/assets/input_file_0.png",
+  "/assets/input_file_1.png",
+  "/assets/input_file_2.png",
+  "/assets/input_file_3.png",
+  "/assets/input_file_4.png",
+  "/assets/input_file_5.png",
+  "/assets/input_file_6.png",
+  "/assets/input_file_7.png",
+  "/assets/input_file_8.png",
+  "/assets/input_file_9.png"
+];
+
+const maleImages = [
+  "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1566492031773-4f4e44671857?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1489980508314-941910ded1f4?auto=format&fit=crop&q=80&w=600"
 ];
 
 // Dynamically generate the 47 county-based user profiles
-export const mockProfiles: UserProfile[] = countyProfilesRaw.map((p, idx) => ({
-  id: p.name.toLowerCase().replace(/\s+/g, '_') + "_" + p.county.toLowerCase().replace(/\s+/g, '_'),
-  name: p.name,
-  age: p.age,
-  gender: p.gender as Gender,
-  distance: idx === 0 ? "< 0.1km" : `${(idx * 0.4 + 0.1).toFixed(1)}km`,
-  location: p.county + ", Kenya",
-  images: p.images,
-  online: idx % 3 === 0 || idx % 5 === 0,
-  status: p.status,
-  personalitySimilarity: 70 + (idx % 28),
-  aboutMe: {
-    active: idx % 4 === 0 ? "Highly Active" : "Active",
-    education: idx % 3 === 0 ? "Graduate" : "In college",
-    socialness: idx % 2 === 0 ? "Socially" : "Extrovert",
-    worldView: idx % 2 === 0 ? "Progress" : "World Peace",
-    alcohol: idx % 5 === 0 ? "Yes" : idx % 3 === 0 ? "Occasionally" : "No",
-    sign: ["Gemini", "Leo", "Scorpio", "Aries", "Pisces", "Taurus", "Aquarius", "Cancer", "Virgo", "Libra"][idx % 10]
-  },
-  hobbies: p.hobbies,
-  truthsAndLie: {
-    truths: [`I live in ${p.county}`, `I love ${p.hobbies[0]}`],
-    lie: "I hate partying"
-  },
-  alwaysSays: "Pamoja Milele ✨"
-}));
+export const mockProfiles: UserProfile[] = countyProfilesRaw.map((p, idx) => {
+  const isFemale = p.gender === "Female";
+  const pool = isFemale ? femaleImages : maleImages;
+  
+  // Create variations of images for profile galleries
+  const pImages = (p.images && p.images.length > 0) ? p.images : [
+    pool[idx % pool.length],
+    pool[(idx + 1) % pool.length],
+    pool[(idx + 2) % pool.length]
+  ];
+
+  return {
+    id: p.name.toLowerCase().replace(/\s+/g, '_') + "_" + p.county.toLowerCase().replace(/\s+/g, '_'),
+    name: p.name,
+    age: p.age,
+    gender: p.gender as Gender,
+    distance: idx === 0 ? "< 0.1km" : `${(idx * 0.4 + 0.1).toFixed(1)}km`,
+    location: p.county + ", Kenya",
+    images: pImages,
+    online: idx % 3 === 0 || idx % 5 === 0,
+    status: p.status,
+    personalitySimilarity: 70 + (idx % 28),
+    aboutMe: {
+      active: idx % 4 === 0 ? "Highly Active" : "Active",
+      education: idx % 3 === 0 ? "Graduate" : "In college",
+      socialness: idx % 2 === 0 ? "Socially" : "Extrovert",
+      worldView: idx % 2 === 0 ? "Progress" : "World Peace",
+      alcohol: idx % 5 === 0 ? "Yes" : idx % 3 === 0 ? "Occasionally" : "No",
+      sign: ["Gemini", "Leo", "Scorpio", "Aries", "Pisces", "Taurus", "Aquarius", "Cancer", "Virgo", "Libra"][idx % 10]
+    },
+    hobbies: p.hobbies,
+    truthsAndLie: {
+      truths: [`I live in ${p.county}`, `I love ${p.hobbies[0]}`],
+      lie: "I hate partying"
+    },
+    alwaysSays: "Pamoja Milele ✨"
+  };
+});
 
 export const mockMoments: MomentPost[] = [
   {
     id: "moment_1",
     authorName: "Rhiaa ✨",
-    authorAvatar: "/assets/input_file_11.png",
+    authorAvatar: "/assets/input_file_2.png",
     authorAge: 23,
     authorGender: "Female",
     content: "SCAM WARNING! 🚨 Don't fall for fake coin offers in private chats! Make sure to recharge safely through the Store or complete daily login tasks to earn coins for chatting. Stay safe folks! 💖",
@@ -125,7 +173,7 @@ export const mockMoments: MomentPost[] = [
     authorAge: 25,
     authorGender: "Female",
     content: "Feeling cool and chill at work today. Nursing is my passion! 🏥🩺❤️",
-    image: "/assets/input_file_10.png",
+    image: "/assets/input_file_8.png", // Changed to make sure it's 100% black model file
     likes: 210,
     comments: 73,
     timestamp: "Yesterday 18:39",
@@ -173,3 +221,99 @@ export const getInteractiveResponse = (profileId: string, userMessage: string): 
   
   return "That's lovely! Party Chatt is awesome, isn't it? Let's check in daily to get free coins so we can keep our conversation active and alive! 🎈📲";
 };
+
+// Generates a consistent, dynamic activity and emoji showing what the user is doing at the party
+export const getPartyActivity = (profile: UserProfile, theme?: 'all' | 'karaoke' | 'clubbing' | 'chill'): { emoji: string; text: string; textSw: string } => {
+  const hash = profile.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  
+  if (theme === 'karaoke') {
+    const karaokeActivities = [
+      { emoji: '🎤', text: 'Singing latest Swahili classics', textSw: 'Kuimba nyimbo za zamani za Kiswahili' },
+      { emoji: '🎵', text: 'Belting out a hot Sheng rap hit', textSw: 'Kuimba miondoko ya Sheng rap kali!' },
+      { emoji: '🎙️', text: 'Hosting the Karaoke main stage', textSw: 'Kuongoza jukwaa kuu la Karaoke' },
+      { emoji: '🎶', text: 'Backing up a friend on stage', textSw: 'Kushirikiana na rafiki jukwaani mkuu' },
+      { emoji: '📣', text: 'Cheering on local singing talents', textSw: 'Washabiki wakipiga kelele jukwaani' }
+    ];
+    return karaokeActivities[hash % karaokeActivities.length];
+  }
+
+  if (theme === 'clubbing') {
+    const clubbingActivities = [
+      { emoji: '💃', text: 'Doing the Gengetone dance session', textSw: 'Anacheza sarakasi za Gengetone' },
+      { emoji: '🕺', text: 'Spicing up the lit dance floor', textSw: 'Kupaza roho kwenye jukwaa la densi' },
+      { emoji: '🍷', text: 'Sipping sweet tropical cocktails', textSw: 'Kunywa vinywaji vitamu vya kigeni' },
+      { emoji: '🥂', text: 'Cheering a glass with new matches', textSw: 'Kugongesha glasi na mechi mpya' },
+      { emoji: '🔊', text: 'Vibing right next to the DJ booth', textSw: 'Kujirusha karibu na kibanda cha DJ!' }
+    ];
+    return clubbingActivities[hash % clubbingActivities.length];
+  }
+
+  if (theme === 'chill') {
+    const chillActivities = [
+      { emoji: '🍕', text: 'Eating cheesy pizza slice together', textSw: 'Kuvinjari na kula pizza ya jibini' },
+      { emoji: '🎮', text: 'Playing vintage arcade video games', textSw: 'Kucheza gemu za zamani za video' },
+      { emoji: '🍿', text: 'Sharing a bowl of spiced pop-corn', textSw: 'Kugawana bisi za moto zilizonunuliwa' },
+      { emoji: '💬', text: 'Code-shifting sheng stori lazily', textSw: 'Kupiga stori tulivu za sheng' },
+      { emoji: '🛌', text: 'Chilling on the cozy lounge sofa', textSw: 'Kupumzika kwenye kochi laini la VIP' }
+    ];
+    return chillActivities[hash % chillActivities.length];
+  }
+
+  // Fallback / default (if 'all' or undefined)
+  // Clean hobbies string for easy matching
+  const hobbiesStr = (profile.hobbies || []).join(',').toLowerCase();
+  
+  if (hobbiesStr.includes('clubbing') || hobbiesStr.includes('party') || hobbiesStr.includes('dance') || hobbiesStr.includes('dancing')) {
+    const danceActivities = [
+      { emoji: '💃', text: 'Dancing on the floor', textSw: 'Anacheza densi jukwaani' },
+      { emoji: '🍷', text: 'Sipping sweet cocktails', textSw: 'Kunywa vinywaji vitamu' },
+      { emoji: '🍻', text: 'Cheering with friends', textSw: 'Kugongesha glasi na marafiki' },
+      { emoji: '✨', text: 'Vibing in the VIP room', textSw: 'Kusherehekea chumba cha VIP' }
+    ];
+    return danceActivities[hash % danceActivities.length];
+  }
+  
+  if (hobbiesStr.includes('game') || hobbiesStr.includes('gaming') || hobbiesStr.includes('tiktok') || hobbiesStr.includes('blogging')) {
+    const mediaActivities = [
+      { emoji: '🎮', text: 'Playing retro arcade games', textSw: 'Kucheza gemu za retro' },
+      { emoji: '📱', text: 'Filming a TikTok trend', textSw: 'Kupiga picha ya TikTok' },
+      { emoji: '🎧', text: 'Listening to Gengetone DJ', textSw: 'Kusikiliza ngoma za DJ' },
+      { emoji: '🎙️', text: 'Tuning into local music podcast', textSw: 'Kusikiliza kipindi cha muziki' }
+    ];
+    return mediaActivities[hash % mediaActivities.length];
+  }
+
+  if (hobbiesStr.includes('cook') || hobbiesStr.includes('eat') || hobbiesStr.includes('baking') || hobbiesStr.includes('sushi') || hobbiesStr.includes('dining')) {
+    const foodActivities = [
+      { emoji: '🍕', text: 'Eating cheesy pizza slice', textSw: 'Kula kipande cha pizza' },
+      { emoji: '🧁', text: 'Munching on sweet cupcakes', textSw: 'Kufurahia keki nzuri' },
+      { emoji: '🍾', text: 'Uncorking some champagne', textSw: 'Kufungua chupa ya shampeini' },
+      { emoji: '🍿', text: 'Snapping photos with snack basket', textSw: 'Kupiga picha na kikapu cha snacks' }
+    ];
+    return foodActivities[hash % foodActivities.length];
+  }
+
+  if (hobbiesStr.includes('gym') || hobbiesStr.includes('fitness') || hobbiesStr.includes('run') || hobbiesStr.includes('running') || hobbiesStr.includes('athletics')) {
+    const physicalActivities = [
+      { emoji: '💪', text: 'Doing crazy dance-offs', textSw: 'Kufanya mashindano ya densi' },
+      { emoji: '👟', text: 'Showing off cool sneakers', textSw: 'Kuonyesha raba zake kali' },
+      { emoji: '🔥', text: 'Doing hot yoga stretches', textSw: 'Kufanya mazoezi ya kunyoosha viungo' }
+    ];
+    return physicalActivities[hash % physicalActivities.length];
+  }
+
+  // Fallbacks with cool diverse emojis
+  const defaultActivities = [
+    { emoji: '🕺', text: 'Dancing under strobe lights', textSw: 'Kucheza chini ya taa za rangi' },
+    { emoji: '🍕', text: 'Grabbing a slice of pizza', textSw: 'Kula pizza ya moto' },
+    { emoji: '🎮', text: 'Gaming on the VR headset', textSw: 'Kucheza gemu za VR' },
+    { emoji: '📸', text: 'Taking crazy party selfies', textSw: 'Kupiga picha kali za selfie' },
+    { emoji: '🎤', text: 'Belting out karaoke hits', textSw: 'Kuimba karaoke kwa sauti' },
+    { emoji: '🥂', text: 'Raising a toast to matches', textSw: 'Kuinua glasi kwa mechi mpya' },
+    { emoji: '🍿', text: 'Snacking on fresh popcorn', textSw: 'Kula bisi za moto' },
+    { emoji: '🎵', text: 'Requesting the next hot song', textSw: 'Kuomba wimbo unaofuata' }
+  ];
+  
+  return defaultActivities[hash % defaultActivities.length];
+};
+

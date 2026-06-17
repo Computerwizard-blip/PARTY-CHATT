@@ -1,23 +1,32 @@
 import React, { useState } from 'react';
 import { Sparkles, MapPin, Heart, MessageCircle, Sliders, Search, X } from 'lucide-react';
 import { UserProfile, AppLanguage, Gender } from '../types';
-import { mockProfiles } from '../data';
+import { mockProfiles, getPartyActivity } from '../data';
 
 interface HomeFeedProps {
   language: AppLanguage;
   onSelectUser: (user: UserProfile) => void;
   onMuteToggle?: () => void;
   onFastChat: (userId: string) => void;
+  followedIds?: string[];
+  friendIds?: string[];
+  onFollowToggle?: (userId: string) => void;
 }
 
 export default function HomeFeed({
   language,
   onSelectUser,
-  onFastChat
+  onFastChat,
+  followedIds = [],
+  friendIds = [],
+  onFollowToggle
 }: HomeFeedProps) {
   const [subTab, setSubTab] = useState<'recommend' | 'newcomer' | 'nearby'>('recommend');
   const [filterGender, setFilterGender] = useState<'All' | 'Female' | 'Male'>('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [partyTheme, setPartyTheme] = useState<'all' | 'karaoke' | 'clubbing' | 'chill'>(() => {
+    return (localStorage.getItem('party_chatt_theme') as any) || 'all';
+  });
 
   const t = {
     en: {
@@ -150,6 +159,49 @@ export default function HomeFeed({
 
       </div>
 
+      {/* Party Themes / Vibe Selector Section */}
+      <div className="mt-4 bg-zinc-900/90 border-2 border-black p-3 rounded-2xl shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-1.5">
+            <span className="text-sm">🔥</span>
+            <span className="text-xs font-black uppercase text-zinc-105 tracking-wider">
+              {language === 'en' ? 'Select Party Theme Vibe' : 'Chagua Vibe ya Sherehe'}
+            </span>
+          </div>
+          <span className="text-[10px] font-black text-yellow-400 bg-black/60 px-2 py-0.5 rounded-md border border-zinc-800 shrink-0">
+            {partyTheme === 'all' && (language === 'en' ? 'Normal Party' : 'Sherehe Kawaida')}
+            {partyTheme === 'karaoke' && (language === 'en' ? '🎤 Karaoke Stage' : '🎤 Jukwaa la Karaoke')}
+            {partyTheme === 'clubbing' && (language === 'en' ? '💃 Clubbing Mood' : '💃 Hali ya Klabu')}
+            {partyTheme === 'chill' && (language === 'en' ? '🛋️ Chill Lounge' : '🛋️ Kupumzika')}
+          </span>
+        </div>
+        
+        <div className="grid grid-cols-4 gap-2">
+          {[
+            { id: 'all', label: language === 'en' ? 'Normal' : 'Kawaida', emoji: '🎉', color: 'hover:border-purple-500' },
+            { id: 'karaoke', label: language === 'en' ? 'Karaoke' : 'Karaoke', emoji: '🎤', color: 'hover:border-amber-400' },
+            { id: 'clubbing', label: language === 'en' ? 'Clubbing' : 'Klabu', emoji: '💃', color: 'hover:border-rose-500' },
+            { id: 'chill', label: language === 'en' ? 'Chill' : 'Chill', emoji: '🛋️', color: 'hover:border-emerald-400' }
+          ].map((themeItem) => (
+            <button
+              key={themeItem.id}
+              onClick={() => {
+                setPartyTheme(themeItem.id as any);
+                localStorage.setItem('party_chatt_theme', themeItem.id);
+              }}
+              className={`flex flex-col items-center justify-center py-2 px-1 rounded-xl border-2 transition-all cursor-pointer focus:outline-none active:scale-95 ${
+                partyTheme === themeItem.id
+                  ? 'bg-yellow-400 text-black border-black shadow-[1.5px_1.5px_0px_0px_rgba(0,0,0,1)]'
+                  : `bg-zinc-955 text-zinc-400 border-zinc-800 ${themeItem.color} hover:text-white`
+              }`}
+            >
+              <span className="text-lg leading-none mb-1">{themeItem.emoji}</span>
+              <span className="text-[8px] font-black uppercase tracking-tight">{themeItem.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Profile grid matching video */}
       {filtered.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center py-16 text-center">
@@ -189,29 +241,76 @@ export default function HomeFeed({
                   </div>
                 )}
 
+                {/* Friendship Badge (Both follow each other) */}
+                {friendIds.includes(profile.id) && (
+                  <div className="absolute top-10 left-2 bg-rose-600 border-2 border-black text-[9px] font-black uppercase text-white px-2 py-0.5 rounded-md flex items-center gap-0.5 shadow-md animate-bounce z-10">
+                    <span>🤝 Friends</span>
+                  </div>
+                )}
+
                 {/* Bottom metadata tag */}
-                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black via-black/50 to-transparent p-2 pt-8 flex flex-col">
-                  {/* Name and age */}
-                  <div className="flex items-center gap-1 flex-wrap">
-                    <span className="text-white text-sm font-black truncate">{profile.name}</span>
-                    <span className="bg-yellow-400 text-black text-[9px] font-black px-1.5 py-0.2 rounded-full border border-black transform rotate-2">
-                      {profile.age}
-                    </span>
-                  </div>
-                  
-                  {/* Distance */}
-                  <div className="flex items-center gap-1 text-zinc-300 text-[10px] font-extrabold mt-0.5">
-                    <MapPin className="w-2.5 h-2.5 text-yellow-400 shrink-0" />
-                    <span>{profile.distance} • {profile.location}</span>
-                  </div>
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black via-black/70 to-transparent p-2 pt-8 flex flex-col">
+                  {(() => {
+                    const activity = getPartyActivity(profile, partyTheme);
+                    const activityText = language === 'sw' ? activity.textSw : activity.text;
+                    return (
+                      <>
+                        {/* Name, status emoji and age */}
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-white text-sm font-black truncate max-w-[100px]">{profile.name}</span>
+                          <span 
+                            className="inline-flex items-center justify-center text-sm cursor-help select-none bg-black/60 px-1 py-0.5 rounded-full border border-zinc-800 text-xs animate-bounce"
+                            style={{ animationDuration: '3s' }}
+                            title={activityText}
+                            aria-label={activityText}
+                          >
+                            {activity.emoji}
+                          </span>
+                          <span className="bg-yellow-400 text-black text-[9px] font-black px-1.5 py-0.2 rounded-full border border-black transform rotate-2 shrink-0">
+                            {profile.age}
+                          </span>
+                        </div>
+                        
+                        {/* Distance */}
+                        <div className="flex items-center gap-1 text-zinc-300 text-[10px] font-extrabold mt-0.5">
+                          <MapPin className="w-2.5 h-2.5 text-yellow-400 shrink-0" />
+                          <span className="truncate">{profile.distance} • {profile.location}</span>
+                        </div>
+
+                        {/* Live Activity Row */}
+                        <div className="flex items-center gap-1 text-yellow-400 text-[8px] font-black tracking-wider uppercase mt-1.5 bg-black/55 px-1.5 py-0.5 rounded-md border border-zinc-900/60 w-fit max-w-full truncate">
+                          <span className="w-1 h-1 bg-yellow-400 rounded-full animate-ping shrink-0"></span>
+                          <span className="truncate">{activityText}</span>
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
 
               {/* Action area: Say hi dialog bubble */}
-              <div className="p-2 border-t border-zinc-800/80 mt-auto flex items-center justify-between">
-                <span className="text-[10px] text-zinc-500 font-bold max-w-[80px] truncate">
-                  "{profile.status}"
-                </span>
+              <div className="p-2 border-t border-zinc-800/80 mt-auto flex items-center justify-between gap-1.5">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  {/* Plus Red Follow Button on left bottom */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (onFollowToggle) onFollowToggle(profile.id);
+                    }}
+                    className={`shrink-0 w-7 h-7 rounded-full border-2 border-black flex items-center justify-center font-black transition-all cursor-pointer shadow-[1px_1.5px_0_rgba(0,0,0,1)] hover:scale-110 active:translate-y-[0.5px] active:translate-x-[0.5px] ${
+                      followedIds.includes(profile.id)
+                        ? 'bg-zinc-700 hover:bg-zinc-650 text-white text-[10px]'
+                        : 'bg-red-600 hover:bg-red-500 text-white text-[15px]'
+                    }`}
+                    title={followedIds.includes(profile.id) ? "Following" : "Follow"}
+                  >
+                    {followedIds.includes(profile.id) ? '✓' : '+'}
+                  </button>
+
+                  <span className="text-[10px] text-zinc-500 font-bold truncate max-w-[45px] sm:max-w-[70px]">
+                    "{profile.status}"
+                  </span>
+                </div>
                 
                 {/* Instant "Hi!" yellow comic action button */}
                 <button
@@ -219,7 +318,7 @@ export default function HomeFeed({
                     e.stopPropagation();
                     onFastChat(profile.id);
                   }}
-                  className="bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs px-3 py-1.5 rounded-full border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer flex items-center gap-1"
+                  className="bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs px-3 py-1.5 rounded-full border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer flex items-center gap-1 shrink-0"
                 >
                   <MessageCircle className="w-3 h-3 fill-black text-black" />
                   <span>{t.hi}</span>

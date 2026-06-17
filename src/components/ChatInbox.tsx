@@ -11,6 +11,7 @@ interface ChatInboxProps {
   setSessions: React.Dispatch<React.SetStateAction<ChatSession[]>>;
   openStore: () => void;
   onViewProfile: (userId: string) => void;
+  onRecordSentMessage?: (userId: string) => void;
 }
 
 export default function ChatInbox({
@@ -20,7 +21,8 @@ export default function ChatInbox({
   sessions,
   setSessions,
   openStore,
-  onViewProfile
+  onViewProfile,
+  onRecordSentMessage
 }: ChatInboxProps) {
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [inputText, setInputText] = useState("");
@@ -44,7 +46,7 @@ export default function ChatInbox({
       claimBtn: "Max Claim +50 Coins (Watch 3s Ad)",
       playingAd: "Simulating Sponsor Ad. Please wait...",
       adCoinsClaimed: "Awarded +50 free party coins! ⚡🎁",
-      cannotSendAlert: "Sending messages costs 20 Coins",
+      cannotSendAlert: "Earn coins automatically for every text you send!",
       typing: "typing...",
       placeholder: "Write a friendly message...",
       vibePrompt: "Vibe match",
@@ -58,7 +60,7 @@ export default function ChatInbox({
       claimBtn: "Dai Sarafu +50 (Tazama Ad 3s)",
       playingAd: "Inatayarisha Tangazo la Mdhamini. Tafadhali subiri...",
       adCoinsClaimed: "Umepewa sarafu +50 za bure za sherehe! ⚡🎁",
-      cannotSendAlert: "Kutuma ujumbe kunagharimu Sarafu 20",
+      cannotSendAlert: "Pata sarafu za bure kiotomatiki kwa kila ujumbe unaotuma!",
       typing: "anaandika...",
       placeholder: "Andika ujumbe wa kirafiki...",
       vibePrompt: "Kulingana",
@@ -74,25 +76,23 @@ export default function ChatInbox({
     e.preventDefault();
     if (!inputText.trim() || !activeSessionId) return;
 
-    // Senders must pay 20 coins
-    if (coins < 20) {
-      setInsufficientModal(true);
-      return;
-    }
-
     const messageText = inputText;
     setInputText("");
 
-    // Deduct coins (20)
-    setCoins(prev => prev - 20);
+    // Award / Record coins
+    if (onRecordSentMessage) {
+      onRecordSentMessage(activeSessionId);
+    }
 
-    // Append user message
+    // Append user message with initial sending status (single gray check)
+    const msgId = "msg_" + Date.now();
     const userMsg: ChatMessage = {
-      id: "msg_" + Date.now(),
+      id: msgId,
       senderId: "me",
       text: messageText,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      isMine: true
+      isMine: true,
+      status: 'sending'
     };
 
     setSessions(prev => prev.map(s => {
@@ -107,31 +107,105 @@ export default function ChatInbox({
       return s;
     }));
 
-    // Trigger AI response with typing simulation
-    setTypingId(activeSessionId);
-    
+    // 1. Double gray tick transition after 600ms (received check)
     setTimeout(() => {
-      const replyText = getInteractiveResponse(activeSessionId, messageText);
-      const hostMsg: ChatMessage = {
-        id: "msg_" + (Date.now() + 1),
-        senderId: activeSessionId,
-        text: replyText,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        isMine: false
-      };
-
       setSessions(prev => prev.map(s => {
         if (s.userId === activeSessionId) {
           return {
             ...s,
-            lastMessage: replyText,
-            messages: [...s.messages, hostMsg]
+            messages: s.messages.map(m => m.id === msgId ? { ...m, status: 'sent' } : m)
           };
         }
         return s;
       }));
-      setTypingId(null);
+    }, 600);
+
+    // 2. Double blue tick transition after 1500ms (opened check)
+    setTimeout(() => {
+      setSessions(prev => prev.map(s => {
+        if (s.userId === activeSessionId) {
+          return {
+            ...s,
+            messages: s.messages.map(m => m.id === msgId ? { ...m, status: 'read' } : m)
+          };
+        }
+        return s;
+      }));
     }, 1500);
+
+    // Trigger AI response with typing simulation
+    setTypingId(activeSessionId);
+    
+    // Call the server API for human-like interactive Gemini responses
+    fetch("/api/reply", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        profileId: activeSessionId,
+        userMessage: messageText
+      })
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("HTTP error " + res.status);
+      return res.json();
+    })
+    .then(data => {
+      const replyText = data.reply || "Safi sana! Let's chat more. ✨";
+      
+      // Calculate typing speed dynamically: 35ms per character (human mode)
+      // Cap between 1600ms and 4500ms to keep it realistic without being frustrating
+      const typingTime = Math.min(Math.max(replyText.length * 35, 1600), 4500);
+      
+      setTimeout(() => {
+        const hostMsg: ChatMessage = {
+          id: "msg_" + (Date.now() + 1),
+          senderId: activeSessionId,
+          text: replyText,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          isMine: false
+        };
+
+        setSessions(prev => prev.map(s => {
+          if (s.userId === activeSessionId) {
+            return {
+              ...s,
+              lastMessage: replyText,
+              messages: [...s.messages, hostMsg]
+            };
+          }
+          return s;
+        }));
+        setTypingId(null);
+      }, typingTime);
+    })
+    .catch(err => {
+      console.warn("API reply error, falling back to local chat heuristics:", err);
+      // Fallback
+      setTimeout(() => {
+        const replyText = getInteractiveResponse(activeSessionId, messageText);
+        const hostMsg: ChatMessage = {
+          id: "msg_" + (Date.now() + 1),
+          senderId: activeSessionId,
+          text: replyText,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          isMine: false
+        };
+
+        setSessions(prev => prev.map(s => {
+          if (s.userId === activeSessionId) {
+            return {
+              ...s,
+              lastMessage: replyText,
+              messages: [...s.messages, hostMsg]
+            };
+          }
+          return s;
+        }));
+        setTypingId(null);
+      }, 2000);
+    });
   };
 
   // Simulates watching an ad and claiming coins
@@ -296,9 +370,22 @@ export default function ChatInbox({
                 >
                   {msg.text}
                 </div>
-                {/* Time status line */}
-                <span className="text-[9px] text-zinc-500 font-bold mt-1 px-1">
-                  {msg.timestamp} {msg.isMine && '✔'}
+                {/* Time status line with simulated double tick and blue tick receipt */}
+                <span className="text-[9px] text-zinc-500 font-bold mt-1 px-1 flex items-center gap-1">
+                  <span>{msg.timestamp}</span>
+                  {msg.isMine && (
+                    <span className="inline-flex items-center ml-0.5 select-none">
+                      {msg.status === 'sending' && (
+                        <span className="text-zinc-650 text-[10.5px]" title="Sending">✔</span>
+                      )}
+                      {msg.status === 'sent' && (
+                        <span className="text-zinc-550 text-[10.5px] font-extrabold tracking-[-2.5px] inline-block pr-1" style={{ letterSpacing: '-2.5px' }} title="Received">✔✔</span>
+                      )}
+                      {(msg.status === 'read' || !msg.status) && (
+                        <span className="text-sky-400 text-[10.5px] font-extrabold tracking-[-2.5px] inline-block pr-1" style={{ letterSpacing: '-2.5px' }} title="Opened">✔✔</span>
+                      )}
+                    </span>
+                  )}
                 </span>
               </div>
             ))}
